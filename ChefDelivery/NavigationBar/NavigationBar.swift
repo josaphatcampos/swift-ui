@@ -23,7 +23,7 @@ struct NavigationBar: View {
             
             Button(action:{}) {
                 Image(systemName: "bell.badge")
-                    .foregroundColor(.red)
+                    .foregroundColor(Color("ColorRed"))
                     .font(.title3)
             }
 
