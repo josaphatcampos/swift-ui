@@ -21,7 +21,36 @@ struct ContentView: View {
                     }
                 }
             }
+        }.onAppear{
+            fetchData()
         }
+    }
+    
+    // MARK: - Methods
+    func fetchData() {
+        guard let url = URL(string: "https://private-0ee1801-josaphatcampos.apiary-mock.com/stores") else {return}
+        
+        URLSession.shared.dataTask(with: url){ data, _, error in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+                
+                print(json ?? [])
+                
+            }catch {
+                print(error.localizedDescription)
+            }
+            
+        }.resume()
     }
 }
 
