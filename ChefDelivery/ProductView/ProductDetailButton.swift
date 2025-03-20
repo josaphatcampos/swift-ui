@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct ProductDetailButton: View {
+    var onButtonPress: () -> Void
+    
     var body: some View {
         Button {
-            print("precionou")
+            onButtonPress()
         } label: {
             HStack {
                 Image(systemName: "cart")
-                Text("Adiconar no Carrinho")
+                Text("Enviar Pedido")
                 
             }
             .padding(.horizontal, 32)

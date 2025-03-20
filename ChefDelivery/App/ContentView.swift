@@ -8,50 +8,64 @@
 import SwiftUI
 
 struct ContentView: View {
+    // MARK: - atributes
+    private var service = HomeService()
+    @State private var stores: [StoreType] = []
+    @State private var isLoading: Bool = true
+    
+    // MARK: - view
     var body: some View {
         NavigationView {
             VStack {
-                NavigationBar()
-                    .padding(.horizontal, 15)
-                ScrollView() {
-                    VStack(spacing:20) {
-                        OrderTypeGridView()
-                        CarouselTabView()
-                        StoreView()
+                if  isLoading{
+                    ProgressView()
+                }else{
+                    NavigationBar()
+                        .padding(.horizontal, 15)
+                    ScrollView() {
+                        VStack(spacing:20) {
+                            OrderTypeGridView()
+                            CarouselTabView()
+                            StoreView(stores: stores)
+                        }
                     }
                 }
             }
         }.onAppear{
-            fetchData()
+            Task {
+                await getStore()
+            }
+//            getStoresWithAlamofire()
         }
     }
     
-    // MARK: - Methods
-    func fetchData() {
-        guard let url = URL(string: "https://private-0ee1801-josaphatcampos.apiary-mock.com/stores") else {return}
-        
-        URLSession.shared.dataTask(with: url){ data, _, error in
-            if let error = error {
-                print("Error: \(error)")
-                return
-            }
+    // MARK: - methods
+    
+    func getStore() async{
+        do{
+            let result = try await service.fetchData()
             
-            guard let data = data else {
-                print("No data returned")
-                return
-            }
-            
-            do {
-                let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]]
-                
-                print(json ?? [])
-                
-            }catch {
+            switch result {
+            case .success(let data):
+                self.stores = data
+                isLoading = false
+            case .failure(let error):
+                isLoading = false
                 print(error.localizedDescription)
             }
             
-        }.resume()
+        }catch {
+            print(error.localizedDescription)
+            isLoading = false
+        }
     }
+    
+    func getStoresWithAlamofire(){
+        service.fetchDataWithAlamofire { stores, error  in
+            print(stores)
+        }
+    }
+    
 }
 
 #Preview {

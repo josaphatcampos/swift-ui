@@ -9,12 +9,17 @@ import SwiftUI
 
 struct StoreView: View {
     
-    let title = "Lojas"
+    
     @State var ratingFilter = 0
     
-var filteredStores: [StoreType] {
-    return storesMock.filter { $0.stars >= ratingFilter }
+    let title = "Lojas"
+    var stores: [StoreType]
+    
+    var filteredStores: [StoreType] {
+        return stores.filter { $0.stars >= ratingFilter }
     }
+    
+    
     
     var body: some View {
         VStack(alignment: .leading){
@@ -29,7 +34,7 @@ var filteredStores: [StoreType] {
                     } label: {
                         Text("Limpar filtro")
                     }
-
+                    
                     Divider()
                     
                     ForEach(1...5, id: \.self) { rating in
@@ -37,15 +42,15 @@ var filteredStores: [StoreType] {
                             ratingFilter = rating
                         } label: {
                             switch(rating){
-                                case 1:
-                                    Text("\(rating) estrela ou mais")
-                                case 5:
-                                    Text("\(rating) estrelas")
-                                default :
-                                    Text("\(rating) estrelas ou mais")
+                            case 1:
+                                Text("\(rating) estrela ou mais")
+                            case 5:
+                                Text("\(rating) estrelas")
+                            default :
+                                Text("\(rating) estrelas ou mais")
                             }
                         }
-
+                        
                     }
                 }
                 .foregroundColor(.black)
@@ -77,5 +82,5 @@ var filteredStores: [StoreType] {
 }
 
 #Preview( traits: .sizeThatFitsLayout) {
-    StoreView()
+    StoreView(stores: storesMock)
 }
